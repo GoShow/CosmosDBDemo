@@ -244,12 +244,11 @@ public class CosmosService
 
         foreach (Student student in students)
         {
-            Console.WriteLine(student);
-            Console.WriteLine();
+            Console.WriteLine($"{student}\n");
         }
 
         Console.WriteLine($"Queried items: {students.Count}");
-        Console.WriteLine($"Request units: {requestUnits}");
+        Console.WriteLine($"Request units: {requestUnits}\n");
         Console.WriteLine("Press any key to continue..");
         Console.ReadKey();
         Console.Clear();
@@ -434,6 +433,7 @@ public class CosmosService
     private async Task BulkInsertAsync(CosmosClient cosmosClient)
     {
         int insertCount = 2000;
+
         Container container = cosmosClient.GetContainer(DatabaseId, ContainerId);
 
         var partitionKeys = new string[] { "USA", "England", "Denmark", "Bulgaria" };
@@ -469,7 +469,7 @@ public class CosmosService
         await Task.WhenAll(tasks);
 
         Console.WriteLine($"Inserted items: {students.Count}");
-        Console.WriteLine($"Request units: {requestUnits}");
+        Console.WriteLine($"Request units: {requestUnits}\n");
         Console.WriteLine("Press any key to continue..");
         Console.ReadKey();
         Console.Clear();
@@ -500,18 +500,16 @@ public class CosmosService
 
         foreach (Student student in students)
         {
-            Console.WriteLine(student);
-            Console.WriteLine();
+            Console.WriteLine($"{student}\n");
         }
 
         Console.WriteLine($"Queried items: {students.Count}");
-        Console.WriteLine($"Request units: {response.RequestCharge}");
-        Console.WriteLine();
+        Console.WriteLine($"Request units: {response.RequestCharge}\n");
         Console.WriteLine($"Press 'n' for next {maxItemsCount} items or any other key to quit.");
 
         if (continuationToken is null)
         {
-            Console.WriteLine("All items were queried");
+            Console.WriteLine("All items were queried\n");
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
             Console.Clear();
@@ -536,9 +534,7 @@ public class CosmosService
         StoredProcedureExecuteResponse<string> response =
             await container.Scripts.ExecuteStoredProcedureAsync<string>("DemoSP", new PartitionKey("USA"), null);
 
-        Dictionary<string, IEnumerable<Student>> responseFeed = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<Student>>>(response.Resource);
-
-        IEnumerable<Student> students = responseFeed.Values.SelectMany(student => student);
+        IEnumerable<Student> students = JsonConvert.DeserializeObject<IEnumerable<Student>>(response.Resource);
 
         foreach (var student in students)
         {
@@ -547,8 +543,7 @@ public class CosmosService
         }
 
         Console.WriteLine($"Queried items: {students.Count()}");
-        Console.WriteLine($"Request units: {response.RequestCharge}");
-        Console.WriteLine();
+        Console.WriteLine($"Request units: {response.RequestCharge}\n");
         Console.WriteLine("Press any key to continue");
         Console.ReadKey();
         Console.Clear();
